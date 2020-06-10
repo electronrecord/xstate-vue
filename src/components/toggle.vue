@@ -1,7 +1,17 @@
 <template>
-  <button v-on:click="send('TOGGLE');">
-    {{ current.matches("inactive") ? "Off" : "On" }}
-  </button>
+  <div>
+
+<!--    <button v-on:click="send('TOGGLE');">-->
+<!--      {{ current.matches("inactive") ? "Off" : "On" }}-->
+<!--    </button>-->
+
+    <input type="text"
+           v-model="email"
+           @blur="blur('EMAIL_BLUR')">
+    <br>
+    <span>{{ current.matches("emailErr.badFormat") ? 'email cannot have 3 characters' : '' }}</span>
+
+  </div>
 </template>
 
 <script>
@@ -10,6 +20,7 @@
 
   export default {
     name: 'Toggle',
+
     created() {
       // Start service on component creation
       this.toggleService
@@ -21,8 +32,10 @@
         })
         .start();
     },
+
     data() {
       return {
+        email: '',
         // Interpret the machine and store it in data
         toggleService: interpret(toggleMachine),
 
@@ -33,7 +46,12 @@
         context: toggleMachine.context
       };
     },
+
     methods: {
+      blur (event) {
+        this.context.email = this.email
+        this.toggleService.send(event);
+      },
       // Send events to the service
       send(event) {
         this.toggleService.send(event);
